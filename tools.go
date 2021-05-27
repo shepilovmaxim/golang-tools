@@ -130,6 +130,7 @@ func MakeRequestLog(r *http.Request) error {
 
 	err := WriteToFile("api.log", "["+currentTime.Format("2006.01.02 15:04:05")+"] "+url+" "+method+" "+string(body)+"\n")
 	if err != nil {
+		r.Body = ioutil.NopCloser(bytes.NewReader(body))
 		return err
 	}
 
