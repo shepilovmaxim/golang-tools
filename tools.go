@@ -118,7 +118,7 @@ func WriteToFile(filename string, text string) error {
 	return nil
 }
 
-func MakeRequestLog(r http.Request) error {
+func MakeRequestLog(r *http.Request) error {
 	currentTime := time.Now()
 	url := r.URL.Path
 	method := r.Method
