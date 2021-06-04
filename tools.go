@@ -35,15 +35,15 @@ func JsonDecodeArray(data io.Reader) ([]map[string]interface{}, error) {
 	return responseData, err
 }
 
-func CheckRequiredParams(data map[string]interface{}, filter []string) error {
+func CheckRequiredParams(data map[string]interface{}, filter []string, isEmptyStringValid bool) error {
 	var missingParams []string
 	for _, filterKey := range filter {
 		if strings.Contains(filterKey, "|") {
 			dependParams := strings.Split(filterKey, "|")
 			found := false
 			for _, dependParamsKey := range dependParams {
-				_, ok := data[dependParamsKey]
-				if ok {
+				val, ok := data[dependParamsKey]
+				if isEmptyStringValid && ok && val != nil || !isEmptyStringValid && ok && val != nil && val != "" {
 					found = true
 					break
 				}
@@ -53,7 +53,7 @@ func CheckRequiredParams(data map[string]interface{}, filter []string) error {
 			}
 		} else {
 			val, ok := data[filterKey]
-			if !ok || val == nil {
+			if !ok || val == nil || (!isEmptyStringValid && val == "") {
 				missingParams = append(missingParams, filterKey)
 			}
 		}
