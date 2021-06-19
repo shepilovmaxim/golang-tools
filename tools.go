@@ -43,7 +43,7 @@ func CheckRequiredParams(data map[string]interface{}, filter []string, isEmptySt
 			found := false
 			for _, dependParamsKey := range dependParams {
 				val, ok := data[dependParamsKey]
-				if isEmptyStringValid && ok && val != nil || !isEmptyStringValid && ok && val != nil && val != "" {
+				if (isEmptyStringValid && ok && val != nil) || (!isEmptyStringValid && ok && val != nil && val != "") {
 					found = true
 					break
 				}
