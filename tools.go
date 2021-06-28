@@ -66,6 +66,20 @@ func CheckRequiredParams(data map[string]interface{}, filter []string, isEmptySt
 	return nil
 }
 
+func DecodeRequestAndCheckParams(r *http.Request, filter []string, isEmptyStringValid bool) (map[string]interface{}, error) {
+	requestData, err := JsonDecode(r.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = CheckRequiredParams(requestData, filter, isEmptyStringValid)
+	if err != nil {
+		return nil, err
+	}
+
+	return requestData, nil
+}
+
 func ConvertMap(arr map[string][]string) map[string]interface{} {
 	data := make(map[string]interface{})
 	if arr != nil {
