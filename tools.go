@@ -172,3 +172,17 @@ func MakeRequestLog(r *http.Request) error {
 
 	return nil
 }
+
+func ConvertJsonNumberInterfaceToFloat64(number interface{}) (float64, error) {
+	jsonNumber, ok := number.(json.Number)
+	if !ok {
+		return 0, errors.New("cannot convert to jsonNumber")
+	}
+
+	floatValue, err := jsonNumber.Float64()
+	if err != nil {
+		return 0, errors.New("error converting jsonNumber to float64")
+	}
+
+	return floatValue, nil
+}
