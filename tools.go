@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"log"
@@ -92,6 +93,25 @@ func ConvertMap(arr map[string][]string) map[string]interface{} {
 
 func ShowError(err error, message string, w http.ResponseWriter) {
 	log.Printf("%s: %s\n", message, err)
+	w.WriteHeader(http.StatusForbidden)
+	w.Header().Set("Content-Type", "application/json")
+
+	var tmpMsg = err.Error()
+	if len(tmpMsg) > 0 && tmpMsg[0] == '"' {
+		tmpMsg = tmpMsg[1:]
+	}
+	if len(tmpMsg) > 0 && tmpMsg[len(tmpMsg)-1] == '"' {
+		tmpMsg = tmpMsg[:len(tmpMsg)-1]
+	}
+	msg, err := json.Marshal(fmt.Sprintf("%s: %s", message, tmpMsg))
+	if err != nil {
+		return
+	}
+	w.Write(msg)
+}
+
+func ShowErrorElastic(err error, message string, w http.ResponseWriter, logger *logrus.Logger) {
+	logger.WithError(errors.New(fmt.Sprintf("%s: %s", message, err)))
 	w.WriteHeader(http.StatusForbidden)
 	w.Header().Set("Content-Type", "application/json")
 
