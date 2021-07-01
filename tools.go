@@ -111,7 +111,7 @@ func ShowError(err error, message string, w http.ResponseWriter) {
 }
 
 func ShowErrorElastic(err error, message string, w http.ResponseWriter, logger *logrus.Logger) {
-	logger.WithError(errors.New(fmt.Sprintf("%s: %s", message, err)))
+	logger.Error(errors.New(fmt.Sprintf("%s: %s", message, err)))
 	w.WriteHeader(http.StatusForbidden)
 	w.Header().Set("Content-Type", "application/json")
 
