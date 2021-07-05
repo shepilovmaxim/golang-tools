@@ -156,7 +156,7 @@ func ShowErrorFluent(err error, message string, w http.ResponseWriter, logger *f
 }
 
 func ShowErrorJson(err error, message string, w http.ResponseWriter) {
-	log.Printf("{\"message\": %s: %s,\"time\": \"%s\"}", message, err, time.Now().Format("2006.01.02T15:04:05Z"))
+	log.Printf("{\"message\": \"%s: %s\",\"time\": \"%s\"}", message, err, time.Now().Format("2006.01.02T15:04:05Z"))
 	w.WriteHeader(http.StatusForbidden)
 	w.Header().Set("Content-Type", "application/json")
 
