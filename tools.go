@@ -155,6 +155,25 @@ func ShowErrorFluent(err error, message string, w http.ResponseWriter, logger *f
 	w.Write(msg)
 }
 
+func ShowErrorJson(err error, message string, w http.ResponseWriter) {
+	log.Printf("{\"message\": %s: %s,\"time\": \"%s\"}", message, err, time.Now().Format("2006.01.02T15:04:05Z"))
+	w.WriteHeader(http.StatusForbidden)
+	w.Header().Set("Content-Type", "application/json")
+
+	var tmpMsg = err.Error()
+	if len(tmpMsg) > 0 && tmpMsg[0] == '"' {
+		tmpMsg = tmpMsg[1:]
+	}
+	if len(tmpMsg) > 0 && tmpMsg[len(tmpMsg)-1] == '"' {
+		tmpMsg = tmpMsg[:len(tmpMsg)-1]
+	}
+	msg, err := json.Marshal(fmt.Sprintf("%s: %s", message, tmpMsg))
+	if err != nil {
+		return
+	}
+	w.Write(msg)
+}
+
 func GetHttpError(data io.Reader) error {
 	body, _ := ioutil.ReadAll(data)
 	return errors.New(string(body))
