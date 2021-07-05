@@ -131,7 +131,13 @@ func ShowErrorElastic(err error, message string, w http.ResponseWriter, logger *
 }
 
 func ShowErrorFluent(err error, message string, w http.ResponseWriter, logger *fluent.Fluent) {
-	logger.Post("new tag", errors.New(fmt.Sprintf("%s: %s", message, err)))
+	var data = map[string]string{
+		"message": fmt.Sprintf("%s: %s", message, err),
+	}
+	loggerErr := logger.Post("new tag", data)
+	if err != nil {
+		log.Println(loggerErr)
+	}
 	w.WriteHeader(http.StatusForbidden)
 	w.Header().Set("Content-Type", "application/json")
 
