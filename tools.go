@@ -167,7 +167,11 @@ func ShowErrorJson(err error, message string, w http.ResponseWriter) {
 	if len(tmpMsg) > 0 && tmpMsg[len(tmpMsg)-1] == '"' {
 		tmpMsg = tmpMsg[:len(tmpMsg)-1]
 	}
-	msg, err := json.Marshal(fmt.Sprintf("%s: %s", message, tmpMsg))
+	errObject := map[string]interface{}{
+		"code":    http.StatusForbidden,
+		"message": fmt.Sprintf("%s: %s", message, tmpMsg),
+	}
+	msg, err := json.Marshal(errObject)
 	if err != nil {
 		return
 	}
